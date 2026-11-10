@@ -1,0 +1,2763 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import {
+  ShoppingBag,
+  CreditCard,
+  Wallet,
+  User,
+  Shield,
+  Bot,
+  Search,
+  Heart,
+  Bell,
+  Settings,
+  ChevronRight,
+  Plus,
+  Trash2,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Copy,
+  ExternalLink,
+  Menu,
+  X,
+  Send,
+  Sparkles,
+  ArrowUpRight,
+  TrendingUp,
+  Tag,
+  DollarSign,
+  AlertCircle,
+  Package,
+  Layers,
+  ChevronDown,
+  RefreshCw,
+  Eye,
+  SlidersHorizontal,
+  Check,
+  Zap,
+  Info,
+  Lock,
+  ArrowRight,
+  Filter,
+  LogOut,
+  Smartphone,
+  Star,
+  Receipt,
+  HelpCircle
+} from 'lucide-react';
+
+// ==========================================
+// COMPREHENSIVE LOCALIZATION (AZ & TR)
+// ==========================================
+const translations = {
+  az: {
+    siteName: "RucordAZ",
+    tagline: "Rəqəmsal Məhsullar və Oyun Kodları Platforması",
+    nav: {
+      home: "Ana Səhifə",
+      shop: "Məhsullar",
+      deposit: "Balans artır",
+      orders: "Sifarişlərim",
+      favorites: "Bəyəndiklərim",
+      cart: "Səbət",
+      admin: "Admin Panel",
+      settings: "Tənzimləmələr"
+    },
+    hero: {
+      badge: "⚡ Sürətli & Təhlükəsiz Rəqəmsal Çatdırılma",
+      title: "Rəqəmsal Dünyanın Ən Etibarlı Ünvanı",
+      subtitle: "PUBG Mobile UC, Brawl Stars, Premium Abunəliklər və Oyun Valyutaları ən sərfəli qiymətlərlə LeoBank balansınız vasitəsilə saniyələr içində təhvil verilir.",
+      ctaShop: "Məhsullara Bax",
+      ctaDeposit: "Balans Artır (LeoBank)",
+      feature1: "Anında Kod Təhvili",
+      feature2: "7/24 RucorAZ AI Köməkçi",
+      feature3: "Təhlükəsiz LeoBank Köçürməsi"
+    },
+    categories: {
+      all: "Bütün Məhsullar",
+      c1: "Premium Abunəliklər",
+      c2: "PUBG Mobile UC",
+      c3: "Brawl Stars",
+      c4: "TikTok",
+      c5: "Instagram",
+      c6: "Telegram",
+      c7: "YouTube",
+      c8: "Spotify",
+      c9: "Rəqəmsal Oyun Məhsulları",
+      c10: "Geyim və Aksesuarlar"
+    },
+    product: {
+      inStock: "Stokda var",
+      outOfStock: "Tükənib",
+      addToCart: "Səbətə at",
+      buyNow: "İndi Al",
+      fastDelivery: "Anında Açarla Təhvil",
+      viewDetails: "Ətraflı Məlumat",
+      price: "Qiymət",
+      discount: "Endirim",
+      related: "Oxşar Məhsullar",
+      searchPlaceholder: "Məhsul, kateqoriya və ya oyun axtar...",
+      sortBy: "Sırala",
+      sortPopular: "Ən Çox Satılanlar",
+      sortLow: "Ucuzdan Bahaya",
+      sortHigh: "Bahadan Ucuza",
+      sortNewest: "Ən Yenilər"
+    },
+    wallet: {
+      title: "Rəqəmsal Cüzdan",
+      currentBalance: "Cari Balans",
+      totalDeposited: "Toplam Yüklənən",
+      totalSpent: "Toplam Xərclənən",
+      depositBtn: "Balans Artır",
+      history: "Əməliyyat Tarixçəsi",
+      noTx: "Hələ heç bir əməliyyat qeydə alınmayıb.",
+      txTypes: {
+        deposit: "Balans Artırılması",
+        purchase: "Məhsul Alışı",
+        admin_adjust: "İnzibatçı Düzəlişi"
+      }
+    },
+    deposit: {
+      pageTitle: "Balans Artır - LeoBank",
+      subTitle: "Kart məlumatlarını kopyalayın, vəsaiti köçürün və qəbzi göndərin.",
+      cardTitle: "LeoBank Ödəniş Kartı",
+      cardHolderLabel: "Kart Sahibi",
+      copyCard: "Kartı Kopyala",
+      copied: "Kopyalandı!",
+      instructionTitle: "Ödəniş Təlimatı:",
+      step1: "1. Bu LeoBank kartına istədiyiniz məbləği göndərin.",
+      step2: "2. Göndərdikdən sonra göndərdiyiniz məbləği aşağıdakı yerə yazın.",
+      step3: "3. Ödənişin çekini seçin və göndərin.",
+      approvalNotice: "Ödənişiniz admin tərəfindən yoxlanıldıqdan və təsdiqləndikdən sonra göndərdiyiniz məbləğ hesabınızın balansına əlavə olunacaq.",
+      amountLabel: "Göndərdiyiniz Məbləğ (AZN)",
+      receiptLabel: "Ödəniş Çeki (Şəkil)",
+      noteLabel: "Qeyd (İxtiyari)",
+      notePlaceholder: "Məs: Elvin Məmmədov adına kartdan köçürüldü",
+      dropOrClick: "Şəkli bura sürükləyin və ya klikləyib seçin (JPG, PNG, WEBP)",
+      submit: "Təsdiq üçün Göndər",
+      submitting: "Göndərilir...",
+      pendingStatus: "Yoxlanılır",
+      approvedStatus: "Təsdiqləndi",
+      rejectedStatus: "İmtina Edildi"
+    },
+    cart: {
+      title: "Səbətiniz",
+      empty: "Səbətiniz boşdur",
+      total: "Toplam Məbləğ",
+      yourBalance: "Sizin Balansınız",
+      checkout: "Balansla Ödənişi Tamamla",
+      insufficientFunds: "Balansınız kifayət etmir!",
+      needToDeposit: "Ödəniş etmək üçün balansınızı artırın.",
+      itemCount: "ədəd məhsul",
+      clear: "Səbəti Təmizlə",
+      successMsg: "Sifariş uğurla tamamlandı! Rəqəmsal kodlar dərhal çatdırıldı."
+    },
+    orders: {
+      title: "Sifariş Tarixçəsi",
+      orderId: "Sifariş №",
+      date: "Tarix",
+      status: "Status",
+      amount: "Məbləğ",
+      items: "Məhsullar",
+      keyInfo: "Aktivasiya Kodu / Açar",
+      copyKey: "Kodu Kopyala",
+      noOrders: "Hələ ki, heç bir sifarişiniz yoxdur."
+    },
+    admin: {
+      title: "RucordAZ İdarəetmə Mərkəzi",
+      sub: "Bütün sifarişlər, bakiye tələbləri, maliyyə və məhsul kataloqu",
+      totalUsers: "İstifadəçilər",
+      totalProducts: "Məhsullar",
+      totalOrders: "Sifarişlər",
+      totalRevenue: "Ümumi Dövriyyə",
+      pendingDeposits: "Gözləyən Ödənişlər",
+      tabRequests: "Balans Yükləmə Sorğuları",
+      tabManual: "İstifadəçi Balansını İdarə Et",
+      tabProducts: "Məhsul İdarəetməsi",
+      tabSettings: "Kart Tənzimləmələri",
+      approve: "Təsdiqlə",
+      reject: "İmtina et",
+      rejectionReason: "İmtina səbəbini qeyd edin:",
+      adjustBalance: "Balansı Tənzimlə",
+      addBalance: "Balans Artır (+)",
+      deductBalance: "Balans Sil (-)",
+      reasonPlaceholder: "Dəyişiklik səbəbi (Audit üçün zəruridir)",
+      saveChanges: "Yadda Saxla",
+      addNewProduct: "Yeni Məhsul Əlavə Et",
+      productAdded: "Yeni məhsul uğurla əlavə olundu"
+    },
+    ai: {
+      name: "RucorAZ AI",
+      status: "Onlayn • 7/24 Ağıllı Köməkçi",
+      welcome: "Salam! Mən RucorAZ AI rəqəmsal assistentiyəm. Balans artırma, LeoBank köçürməsi, PUBG UC və rəqəmsal açarlarla bağlı sizə necə kömək edə bilərəm?",
+      placeholder: "Sualınızı buraya yazın...",
+      q1: "Balansımı necə artıra bilərəm?",
+      q2: "PUBG Mobile UC necə çatdırılır?",
+      q3: "Ödənişim nə qədər vaxta təsdiqlənir?"
+    },
+    settings: {
+      title: "Hesab və Tənzimləmələr",
+      language: "Sistem Dili",
+      accountType: "Hesab Növü & Rol",
+      userProfile: "İstifadəçi Məlumatları",
+      notifications: "Bildirişlər",
+      switchUser: "Müştəri kimi daxil ol",
+      switchAdmin: "İnzibatçı (Admin) kimi daxil ol",
+      securityAudit: "Təhlükəsizlik və Audit"
+    }
+  },
+  tr: {
+    siteName: "RucordAZ",
+    tagline: "Dijital Ürünler ve Oyun Kodları Platformu",
+    nav: {
+      home: "Ana Sayfa",
+      shop: "Ürünler",
+      deposit: "Bakiye Yükle",
+      orders: "Siparişlerim",
+      favorites: "Favorilerim",
+      cart: "Sepet",
+      admin: "Yönetici Paneli",
+      settings: "Ayarlar"
+    },
+    hero: {
+      badge: "⚡ Hızlı & Güvenli Dijital Teslimat",
+      title: "Dijital Dünyanın En Avantajlı Adresi",
+      subtitle: "PUBG Mobile UC, Brawl Stars, Premium Abonelikler ve Oyun Ürünleri en uygun fiyatlarla cüzdan bakiyenizle anında teslim edilir.",
+      ctaShop: "Ürünleri İncele",
+      ctaDeposit: "Bakiye Yükle (LeoBank)",
+      feature1: "Anında Dijital Kod Teslimi",
+      feature2: "7/24 RucorAZ AI Destek",
+      feature3: "Güvenli LeoBank Transferi"
+    },
+    categories: {
+      all: "Tüm Ürünler",
+      c1: "Premium Abonelikler",
+      c2: "PUBG Mobile UC",
+      c3: "Brawl Stars",
+      c4: "TikTok",
+      c5: "Instagram",
+      c6: "Telegram",
+      c7: "YouTube",
+      c8: "Spotify",
+      c9: "Dijital Oyun Ürünleri",
+      c10: "Giyim ve Aksesuarlar"
+    },
+    product: {
+      inStock: "Stokta Var",
+      outOfStock: "Tükendi",
+      addToCart: "Sepete Ekle",
+      buyNow: "Hemen Al",
+      fastDelivery: "Anında Kod Teslimi",
+      viewDetails: "Detayları Gör",
+      price: "Fiyat",
+      discount: "İndirim",
+      related: "Benzer Ürünler",
+      searchPlaceholder: "Ürün, kategori veya oyun ara...",
+      sortBy: "Sırala",
+      sortPopular: "En Çok Satanlar",
+      sortLow: "Fiyata Göre (Artan)",
+      sortHigh: "Fiyata Göre (Azalan)",
+      sortNewest: "En Yeniler"
+    },
+    wallet: {
+      title: "Dijital Cüzdan",
+      currentBalance: "Güncel Bakiye",
+      totalDeposited: "Toplam Yüklenen",
+      totalSpent: "Toplam Harcanan",
+      depositBtn: "Bakiye Yükle",
+      history: "İşlem Geçmişi",
+      noTx: "Henüz bir işlem kaydedilmedi.",
+      txTypes: {
+        deposit: "Bakiye Yükleme",
+        purchase: "Ürün Alımı",
+        admin_adjust: "Yönetici Düzenlemesi"
+      }
+    },
+    deposit: {
+      pageTitle: "Bakiye Yükle - LeoBank",
+      subTitle: "Kart bilgilerini kopyalayın, tutarı gönderin ve dekontu yükleyin.",
+      cardTitle: "LeoBank Ödeme Kartı",
+      cardHolderLabel: "Kart Sahibi",
+      copyCard: "Kartı Kopyala",
+      copied: "Kopyalandı!",
+      instructionTitle: "Ödeme Talimatı:",
+      step1: "1. Bu LeoBank kartına istediğiniz tutarı gönderin.",
+      step2: "2. Gönderdikten sonra gönderdiğiniz tutarı aşağıdaki alana yazın.",
+      step3: "3. Ödemenin makbuzunu/dekontunu seçip gönderin.",
+      approvalNotice: "Ödemeniz yönetici tarafından incelenip onaylandıktan sonra gönderdiğiniz tutar cüzdanınıza eklenecektir.",
+      amountLabel: "Gönderilen Tutar (AZN)",
+      receiptLabel: "Ödeme Dekontu (Görsel)",
+      noteLabel: "Not (İsteğe bağlı)",
+      notePlaceholder: "Örn: Elvin Məmmədov adına hesaptan gönderildi",
+      dropOrClick: "Görseli sürükleyin veya seçmek için tıklayın (JPG, PNG, WEBP)",
+      submit: "Onay İçin Gönder",
+      submitting: "Gönderiliyor...",
+      pendingStatus: "İnceleniyor",
+      approvedStatus: "Onaylandı",
+      rejectedStatus: "Reddedildi"
+    },
+    cart: {
+      title: "Sepetiniz",
+      empty: "Sepetiniz boş",
+      total: "Toplam Tutar",
+      yourBalance: "Cüzdan Bakiyeniz",
+      checkout: "Bakiye İle Satın Al",
+      insufficientFunds: "Yetersiz Bakiye!",
+      needToDeposit: "Ödemeyi tamamlamak için bakiye yükleyiniz.",
+      itemCount: "adet ürün",
+      clear: "Sepeti Temizle",
+      successMsg: "Sipariş başarıyla tamamlandı! Dijital kodlar anında teslim edildi."
+    },
+    orders: {
+      title: "Sipariş Geçmişi",
+      orderId: "Sipariş No",
+      date: "Tarih",
+      status: "Durum",
+      amount: "Tutar",
+      items: "Ürünler",
+      keyInfo: "Teslim Edilen Lisans Kodu",
+      copyKey: "Kodu Kopyala",
+      noOrders: "Henüz bir siparişiniz bulunmamaktadır."
+    },
+    admin: {
+      title: "RucordAZ Yönetici Paneli",
+      sub: "Tüm siparişler, bakiye talepleri ve ürün yönetimi",
+      totalUsers: "Kullanıcılar",
+      totalProducts: "Ürünler",
+      totalOrders: "Siparişler",
+      totalRevenue: "Toplam Ciro",
+      pendingDeposits: "Bekleyen Yüklemeler",
+      tabRequests: "Bakiye Yükleme Talepleri",
+      tabManual: "Kullanıcı Bakiyesini Yönet",
+      tabProducts: "Ürün Yönetimi",
+      tabSettings: "Kart Ayarları",
+      approve: "Onayla",
+      reject: "Reddet",
+      rejectionReason: "Reddetme gerekçesi girin:",
+      adjustBalance: "Bakiyeyi Düzenle",
+      addBalance: "Bakiye Ekle (+)",
+      deductBalance: "Bakiye Düş (-)",
+      reasonPlaceholder: "İşlem açıklaması (Denetim için zorunlu)",
+      saveChanges: "Değişiklikleri Kaydet",
+      addNewProduct: "Yeni Ürün Ekle",
+      productAdded: "Yeni ürün başarıyla eklendi"
+    },
+    ai: {
+      name: "RucorAZ AI",
+      status: "Çevrimiçi • 7/24 Akıllı Asistan",
+      welcome: "Merhaba! Ben RucorAZ AI akıllı asistanıyım. Bakiye yükleme, LeoBank transferi, PUBG UC ve siparişleriniz konusunda size nasıl yardımcı olabilirim?",
+      placeholder: "Sorunuzu buraya yazın...",
+      q1: "Bakiyemi nasıl yükleyebilirim?",
+      q2: "PUBG Mobile UC nasıl teslim edilir?",
+      q3: "Ödemem ne kadar sürede onaylanır?"
+    },
+    settings: {
+      title: "Hesap ve Ayarlar",
+      language: "Sistem Dili",
+      accountType: "Hesap Türü & Rol",
+      userProfile: "Kullanıcı Bilgileri",
+      notifications: "Bildirimler",
+      switchUser: "Müşteri olarak giriş yap",
+      switchAdmin: "Yönetici olarak giriş yap",
+      securityAudit: "Güvenlik ve Denetim"
+    }
+  }
+};
+
+// ==========================================
+// INITIAL REALISTIC PRODUCTS & CATEGORIES
+// ==========================================
+const INITIAL_CATEGORIES = [
+  { id: "c1", az: "Premium Abunəliklər", tr: "Premium Abonelikler" },
+  { id: "c2", az: "PUBG Mobile UC", tr: "PUBG Mobile UC" },
+  { id: "c3", az: "Brawl Stars", tr: "Brawl Stars" },
+  { id: "c4", az: "TikTok", tr: "TikTok" },
+  { id: "c5", az: "Instagram", tr: "Instagram" },
+  { id: "c6", az: "Telegram", tr: "Telegram" },
+  { id: "c7", az: "YouTube", tr: "YouTube" },
+  { id: "c8", az: "Spotify", tr: "Spotify" },
+  { id: "c9", az: "Rəqəmsal Oyun Məhsulları", tr: "Dijital Oyun Ürünleri" },
+  { id: "c10", az: "Geyim və Aksesuarlar", tr: "Giyim ve Aksesuarlar" }
+];
+
+const INITIAL_PRODUCTS = [
+  {
+    id: "prod-1",
+    categoryId: "c2",
+    title: "PUBG Mobile 660 UC",
+    price: 18.50,
+    discountPrice: 16.90,
+    stock: 85,
+    salesCount: 640,
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
+    descAz: "PUBG Mobile üçün rəsmi 660 UC rəqəmsal EPIN kodu. Qlobal serverlərdə Royale Pass və sandıqlar üçün birbaşa aktiv olunur.",
+    descTr: "PUBG Mobile için resmi 660 UC dijital pin kodu. Royale Pass için ideal.",
+    digitalCodePrefix: "PUBG-UC660-"
+  },
+  {
+    id: "prod-2",
+    categoryId: "c2",
+    title: "PUBG Mobile 1800 UC",
+    price: 49.00,
+    discountPrice: 44.50,
+    stock: 40,
+    salesCount: 390,
+    image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=600&q=80",
+    descAz: "Böyük paket! Rəsmi 1800 Unknown Cash (UC). Anında açarla çatdırılır.",
+    descTr: "1800 UC resmi dijital kupon kodu. Anında teslimat.",
+    digitalCodePrefix: "PUBG-UC1800-"
+  },
+  {
+    id: "prod-3",
+    categoryId: "c1",
+    title: "ChatGPT Plus (1 Aylıq Şəxsi)",
+    price: 36.00,
+    discountPrice: 32.00,
+    stock: 30,
+    salesCount: 710,
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80",
+    descAz: "GPT-4o, DALL-E 3 və qabaqcıl multimodal analiz funksiyalarını daxil edən 1 aylıq rəsmi ChatGPT Plus.",
+    descTr: "1 Aylık resmi ChatGPT Plus hesabı. En son yapay zeka modellerine tam erişim.",
+    digitalCodePrefix: "GPT-PLUS-"
+  },
+  {
+    id: "prod-4",
+    categoryId: "c6",
+    title: "Telegram Premium (3 Aylıq Hədiyyə)",
+    price: 24.00,
+    discountPrice: 19.90,
+    stock: 55,
+    salesCount: 480,
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+    descAz: "Rəsmi hədiyyə linki formasında 3 aylıq Telegram Premium abunəliyi. 4GB fayl yükləmə və xüsusi nişanlar.",
+    descTr: "3 Aylık hediye bağlantısı ile resmi Telegram Premium aktivasyonu.",
+    digitalCodePrefix: "TG-PREM3-"
+  },
+  {
+    id: "prod-5",
+    categoryId: "c8",
+    title: "Spotify Premium 3 Aylıq İndividual",
+    price: 15.00,
+    discountPrice: 12.50,
+    stock: 90,
+    salesCount: 890,
+    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+    descAz: "Reklamsız musiqi, limitsiz keçidlər və oflayn dinləmə. Şəxsi hesabınız üçün rəsmi aktivasiya.",
+    descTr: "3 Aylık Spotify Premium aktivasyon kodu. Reklamsız müzik.",
+    digitalCodePrefix: "SPOT-3M-"
+  },
+  {
+    id: "prod-6",
+    categoryId: "c7",
+    title: "YouTube Premium 12 Aylıq",
+    price: 45.00,
+    discountPrice: 38.00,
+    stock: 25,
+    salesCount: 310,
+    image: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&fit=crop&w=600&q=80",
+    descAz: "1 il boyunca YouTube və YouTube Music xidmətindən reklamsız və arxa fonda zövq alın.",
+    descTr: "12 Aylık YouTube Premium üyeliği. Kesintisiz video ve müzik.",
+    digitalCodePrefix: "YT-12M-"
+  },
+  {
+    id: "prod-7",
+    categoryId: "c3",
+    title: "Brawl Stars Brawl Pass Plus",
+    price: 22.00,
+    discountPrice: 19.50,
+    stock: 45,
+    salesCount: 420,
+    image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+    descAz: "Brawl Stars üçün cari mövsümün ən yüksək səviyyəli Brawl Pass Plus paketi.",
+    descTr: "Brawl Stars Brawl Pass Plus dijital kupon kodu.",
+    digitalCodePrefix: "BS-PASS-"
+  },
+  {
+    id: "prod-8",
+    categoryId: "c9",
+    title: "Valorant 2050 VP (Riot Points)",
+    price: 32.00,
+    discountPrice: 28.90,
+    stock: 60,
+    salesCount: 560,
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+    descAz: "Riot Games TR/AZ serverlərində etibarlı 2050 VP rəsmi EPIN kodu. Silah dəriləri və döyüş bileti üçün.",
+    descTr: "2050 Valorant VP resmi dijital e-pin kodu.",
+    digitalCodePrefix: "VAL-2050VP-"
+  },
+  {
+    id: "prod-9",
+    categoryId: "c9",
+    title: "Steam Cüzdan Kodu 20 USD",
+    price: 38.00,
+    discountPrice: 35.00,
+    stock: 75,
+    salesCount: 680,
+    image: "https://images.unsplash.com/photo-1612287232252-7010471b0597?auto=format&fit=crop&w=600&q=80",
+    descAz: "Bütün regionlarda aktivləşən 20 USD dəyərində Steam Wallet rəqəmsal açarı.",
+    descTr: "Tüm dünyada geçerli 20$ Steam Cüzdan Kodu.",
+    digitalCodePrefix: "STM-USD20-"
+  },
+  {
+    id: "prod-10",
+    categoryId: "c10",
+    title: "RucordAZ Cyberpunk Gamer Hoodie",
+    price: 65.00,
+    discountPrice: 55.00,
+    stock: 18,
+    salesCount: 95,
+    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80",
+    descAz: "Məhdud sayda buraxılmış 100% qalın pambıq qara RucordAZ qırmızı vurğulu geyici hudi.",
+    descTr: "Özel seri RucordAZ siyah-kırmızı gamer kapüşonlu sweatshirt.",
+    digitalCodePrefix: "MRCH-HD-"
+  }
+];
+
+export default function App() {
+  // ----------------------------------------------------
+  // PERSISTENT APP STATE (Local Storage Backbone)
+  // ----------------------------------------------------
+  const [lang, setLang] = useState(() => localStorage.getItem('rucord_lang') || 'az');
+  const t = translations[lang] || translations.az;
+
+  const [activeTab, setActiveTab] = useState('home'); // home, shop, deposit, orders, cart, favorites, admin, settings
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Authenticated User State & Digital Wallet
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('rucord_user');
+    return saved ? JSON.parse(saved) : {
+      id: "usr_99410",
+      name: "Teymur Əliyev",
+      email: "teymur@rucord.az",
+      role: "admin", // admin or customer
+      walletBalance: 65.50,
+      totalDeposited: 150.00,
+      totalSpent: 84.50
+    };
+  });
+
+  // LeoBank Configuration (Securely configured and editable by Admin)
+  const [leobankConfig, setLeobankConfig] = useState(() => {
+    const saved = localStorage.getItem('rucord_leobank_config');
+    return saved ? JSON.parse(saved) : {
+      cardNumber: "5411 2498 1282 2497",
+      cardHolder: "ELVİN MƏMMƏDOV",
+      isActive: true
+    };
+  });
+
+  // Catalog
+  const [categories, setCategories] = useState(() => {
+    const saved = localStorage.getItem('rucord_categories');
+    return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
+  });
+
+  const [products, setProducts] = useState(() => {
+    const saved = localStorage.getItem('rucord_products');
+    return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+  });
+
+  // Shopping Cart & Favorites
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem('rucord_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('rucord_favs');
+    return saved ? JSON.parse(saved) : ["prod-1", "prod-3"];
+  });
+
+  // Orders Ledger
+  const [orders, setOrders] = useState(() => {
+    const saved = localStorage.getItem('rucord_orders');
+    return saved ? JSON.parse(saved) : [
+      {
+        id: "ORD-9421",
+        userId: "usr_99410",
+        customerName: "Teymur Əliyev",
+        items: [
+          { title: "Spotify Premium 3 Aylıq İndividual", price: 12.50, quantity: 1, key: "SPOT-3M-99A8-4421-B78" }
+        ],
+        totalAmount: 12.50,
+        status: "Completed",
+        date: "2026-11-08 14:22"
+      }
+    ];
+  });
+
+  // Manual LeoBank Payment Requests
+  const [paymentRequests, setPaymentRequests] = useState(() => {
+    const saved = localStorage.getItem('rucord_pay_reqs');
+    return saved ? JSON.parse(saved) : [
+      {
+        id: "RC-PAY-8821",
+        userId: "usr_99410",
+        userName: "Teymur Əliyev",
+        userEmail: "teymur@rucord.az",
+        amount: 50.00,
+        receiptUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80",
+        note: "LeoBank-dan köçürüldü",
+        status: "Pending", // Pending (Yoxlanılır), Approved, Rejected
+        createdAt: "2026-11-09 18:30",
+        rejectionReason: ""
+      }
+    ];
+  });
+
+  // Notifications
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem('rucord_notifications');
+    return saved ? JSON.parse(saved) : [
+      { id: "notif-1", title: "Xoş gəldiniz!", message: "RucordAZ rəqəmsal platformasına xoş gəldiniz. Hesabınız aktivdir.", read: false, time: "Dünən" },
+      { id: "notif-2", title: "Ödəniş qəbul edildi", message: "50.00 AZN dəyərində ödəniş sorğunuz admin yoxlamasındadır.", read: true, time: "2 saat əvvəl" }
+    ];
+  });
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+
+  // Search & Filter State
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("popular");
+  const [selectedProductDetails, setSelectedProductDetails] = useState(null);
+
+  // Deposit Form State
+  const [depositAmount, setDepositAmount] = useState("");
+  const [depositNote, setDepositNote] = useState("");
+  const [receiptPreview, setReceiptPreview] = useState("");
+  const [depositSubmitting, setDepositSubmitting] = useState(false);
+
+  // Toast System
+  const [toastMessage, setToastMessage] = useState(null);
+
+  // AI Assistant Chat State (RucorAZ AI)
+  const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [aiMessages, setAiMessages] = useState([
+    {
+      sender: "bot",
+      text: t.ai.welcome,
+      time: "İndi"
+    }
+  ]);
+  const [aiInputText, setAiInputText] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const chatBottomRef = useRef(null);
+
+  // Admin New Product Form Modal State
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [newProdTitle, setNewProdTitle] = useState("");
+  const [newProdPrice, setNewProdPrice] = useState("");
+  const [newProdCategory, setNewProdCategory] = useState("c2");
+  const [newProdStock, setNewProdStock] = useState("50");
+  const [newProdDesc, setNewProdDesc] = useState("");
+  const [newProdImage, setNewProdImage] = useState("");
+
+  // Sync to LocalStorage
+  useEffect(() => { localStorage.setItem('rucord_lang', lang); }, [lang]);
+  useEffect(() => { localStorage.setItem('rucord_user', JSON.stringify(currentUser)); }, [currentUser]);
+  useEffect(() => { localStorage.setItem('rucord_leobank_config', JSON.stringify(leobankConfig)); }, [leobankConfig]);
+  useEffect(() => { localStorage.setItem('rucord_categories', JSON.stringify(categories)); }, [categories]);
+  useEffect(() => { localStorage.setItem('rucord_products', JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem('rucord_cart', JSON.stringify(cart)); }, [cart]);
+  useEffect(() => { localStorage.setItem('rucord_favs', JSON.stringify(favorites)); }, [favorites]);
+  useEffect(() => { localStorage.setItem('rucord_orders', JSON.stringify(orders)); }, [orders]);
+  useEffect(() => { localStorage.setItem('rucord_pay_reqs', JSON.stringify(paymentRequests)); }, [paymentRequests]);
+  useEffect(() => { localStorage.setItem('rucord_notifications', JSON.stringify(notifications)); }, [notifications]);
+
+  // Toast Trigger Helper
+  const showToast = (msg, type = "success") => {
+    setToastMessage({ msg, type });
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  // Add Notification Helper
+  const addNotification = (title, message) => {
+    const newN = {
+      id: "notif-" + Date.now(),
+      title,
+      message,
+      read: false,
+      time: "İndi"
+    };
+    setNotifications(prev => [newN, ...prev]);
+  };
+
+  const handleLanguageChange = (newLang) => {
+    setLang(newLang);
+    showToast(newLang === 'az' ? "Dil Azərbaycan dilinə dəyişdirildi" : "Dil Türkçe olarak değiştirildi");
+  };
+
+  // ----------------------------------------------------
+  // SHOPPING CART & REAL-TIME PURCHASE ENGINE
+  // ----------------------------------------------------
+  const addToCart = (product) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        showToast(`${product.title} səbətdə artırıldı`);
+        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+      } else {
+        showToast(`${product.title} səbətə əlavə olundu`);
+        return [...prev, { ...product, quantity: 1 }];
+      }
+    });
+  };
+
+  const updateCartQuantity = (id, delta) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id) {
+        const newQ = item.quantity + delta;
+        return newQ > 0 ? { ...item, quantity: newQ } : null;
+      }
+      return item;
+    }).filter(Boolean));
+  };
+
+  const removeFromCart = (id) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+    showToast("Məhsul səbətdən silindi", "info");
+  };
+
+  const cartTotal = useMemo(() => {
+    return cart.reduce((acc, item) => {
+      const price = item.discountPrice || item.price;
+      return acc + (price * item.quantity);
+    }, 0);
+  }, [cart]);
+
+  const toggleFavorite = (productId) => {
+    setFavorites(prev => {
+      if (prev.includes(productId)) {
+        showToast("Bəyənilənlərdən çıxarıldı", "info");
+        return prev.filter(id => id !== productId);
+      } else {
+        showToast("Bəyənilənlərə əlavə olundu", "success");
+        return [...prev, productId];
+      }
+    });
+  };
+
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+
+    if (currentUser.walletBalance < cartTotal) {
+      showToast(t.cart.insufficientFunds + " " + t.cart.needToDeposit, "error");
+      setActiveTab('deposit');
+      return;
+    }
+
+    // Process Purchase: Generate unique cryptographic license keys for instant delivery
+    const deliveredItems = cart.map(item => {
+      const randomKey = `${item.digitalCodePrefix || 'KEY-'}${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      return {
+        id: item.id,
+        title: item.title,
+        price: item.discountPrice || item.price,
+        quantity: item.quantity,
+        key: randomKey
+      };
+    });
+
+    const newOrder = {
+      id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+      userId: currentUser.id,
+      customerName: currentUser.name,
+      items: deliveredItems,
+      totalAmount: cartTotal,
+      status: "Completed",
+      date: new Date().toISOString().replace('T', ' ').substring(0, 16)
+    };
+
+    // Deduct User Wallet securely
+    setCurrentUser(prev => ({
+      ...prev,
+      walletBalance: Number((prev.walletBalance - cartTotal).toFixed(2)),
+      totalSpent: Number((prev.totalSpent + cartTotal).toFixed(2))
+    }));
+
+    // Update Product Stock
+    setProducts(prev => prev.map(p => {
+      const inCart = cart.find(ci => ci.id === p.id);
+      if (inCart) {
+        return {
+          ...p,
+          stock: Math.max(0, p.stock - inCart.quantity),
+          salesCount: (p.salesCount || 0) + inCart.quantity
+        };
+      }
+      return p;
+    }));
+
+    // Save Order & Clear Cart
+    setOrders(prev => [newOrder, ...prev]);
+    setCart([]);
+
+    addNotification("Sifariş Uğurla Tamamlandı! 🎉", `${newOrder.id} nömrəli sifarişiniz tamamlandı. Bütün rəqəmsal açarlarınız aktivdir.`);
+    showToast(t.cart.successMsg, "success");
+    setActiveTab('orders');
+  };
+
+  // ----------------------------------------------------
+  // MANUAL LEOBANK PAYMENT SYSTEM
+  // ----------------------------------------------------
+  const handleReceiptUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setReceiptPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDepositSubmit = (e) => {
+    e.preventDefault();
+    const amountNum = parseFloat(depositAmount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      showToast("Zəhmət olmasa düzgün məbləğ daxil edin (min. 1 AZN)", "error");
+      return;
+    }
+
+    if (!receiptPreview) {
+      showToast("Zəhmət olmasa ödəniş çekinin şəklini yükləyin", "error");
+      return;
+    }
+
+    setDepositSubmitting(true);
+
+    setTimeout(() => {
+      const newPaymentReq = {
+        id: "RC-PAY-" + Math.floor(1000 + Math.random() * 9000),
+        userId: currentUser.id,
+        userName: currentUser.name,
+        userEmail: currentUser.email,
+        amount: amountNum,
+        receiptUrl: receiptPreview,
+        note: depositNote || "LeoBank kart transferi",
+        status: "Pending", // Yoxlanılır
+        createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        rejectionReason: ""
+      };
+
+      setPaymentRequests(prev => [newPaymentReq, ...prev]);
+      addNotification("Balans Sorğusu Göndərildi", `${amountNum.toFixed(2)} AZN məbləğində yükləmə sorğunuz administrator yoxlamasındadır.`);
+      showToast("Ödəniş qeydə alındı! Admin təsdiqindən sonra balans artacaq.", "success");
+
+      setDepositAmount("");
+      setDepositNote("");
+      setReceiptPreview("");
+      setDepositSubmitting(false);
+    }, 600);
+  };
+
+  // ----------------------------------------------------
+  // ADMIN DASHBOARD ACTIONS
+  // ----------------------------------------------------
+  const handleAdminApproveDeposit = (requestId) => {
+    const req = paymentRequests.find(r => r.id === requestId);
+    if (!req || req.status !== 'Pending') return;
+
+    setPaymentRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: "Approved" } : r));
+
+    // Credit exact amount to the user
+    if (req.userId === currentUser.id) {
+      setCurrentUser(prev => ({
+        ...prev,
+        walletBalance: Number((prev.walletBalance + req.amount).toFixed(2)),
+        totalDeposited: Number((prev.totalDeposited + req.amount).toFixed(2))
+      }));
+    }
+
+    addNotification("Balans Artırıldı! ✅", `${req.amount.toFixed(2)} AZN LeoBank ödənişiniz təsdiqləndi və balansınıza əlavə olundu.`);
+    showToast(`${req.id} təsdiqləndi və ${req.amount.toFixed(2)} AZN balans artırıldı!`, "success");
+  };
+
+  const handleAdminRejectDeposit = (requestId, reason) => {
+    setPaymentRequests(prev => prev.map(r => r.id === requestId ? {
+      ...r,
+      status: "Rejected",
+      rejectionReason: reason || "Bank köçürməsi təsdiq edilmədi"
+    } : r));
+
+    addNotification("Ödəniş Təsdiqlənmədi ❌", `Ödəniş sorğunuz rədd edildi: ${reason || "Qəbz təsdiqlənmədi"}`);
+    showToast("Ödəniş sorğusu rədd edildi.", "info");
+  };
+
+  // Admin Manual Balance Adjust
+  const [manualAmount, setManualAmount] = useState("");
+  const [manualReason, setManualReason] = useState("");
+
+  const handleManualWalletAdjust = (isAdd) => {
+    const amt = parseFloat(manualAmount);
+    if (isNaN(amt) || amt <= 0) {
+      showToast("Zəhmət olmasa məbləği düzgün daxil edin", "error");
+      return;
+    }
+
+    if (!isAdd && currentUser.walletBalance < amt) {
+      showToast("İstifadəçinin balansında kifayət qədər vəsait yoxdur", "error");
+      return;
+    }
+
+    setCurrentUser(prev => {
+      const newBal = isAdd ? prev.walletBalance + amt : prev.walletBalance - amt;
+      return {
+        ...prev,
+        walletBalance: Number(newBal.toFixed(2)),
+        totalDeposited: isAdd ? Number((prev.totalDeposited + amt).toFixed(2)) : prev.totalDeposited
+      };
+    });
+
+    addNotification(
+      isAdd ? "Admin tərəfindən balans artırıldı" : "Admin tərəfindən balans silindi",
+      `${amt.toFixed(2)} AZN. Səbəb: ${manualReason || "Düzəliş"}`
+    );
+
+    showToast(`Əməliyyat uğurla icra edildi (${isAdd ? '+' : '-'}${amt.toFixed(2)} AZN)`, "success");
+    setManualAmount("");
+    setManualReason("");
+  };
+
+  // Admin Add Product Handler
+  const handleAddNewProduct = (e) => {
+    e.preventDefault();
+    const priceNum = parseFloat(newProdPrice);
+    if (!newProdTitle || isNaN(priceNum) || priceNum <= 0) {
+      showToast("Zəhmət olmasa bütün sahələri doldurun", "error");
+      return;
+    }
+
+    const newProduct = {
+      id: "prod-" + Date.now(),
+      categoryId: newProdCategory,
+      title: newProdTitle,
+      price: priceNum,
+      discountPrice: null,
+      stock: parseInt(newProdStock) || 50,
+      salesCount: 0,
+      image: newProdImage || "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+      descAz: newProdDesc || "RucordAZ rəsmi rəqəmsal məhsulu.",
+      descTr: newProdDesc || "RucordAZ resmi dijital ürünü.",
+      digitalCodePrefix: "RUCORD-"
+    };
+
+    setProducts(prev => [newProduct, ...prev]);
+    setShowAddProductModal(false);
+    showToast(t.admin.productAdded, "success");
+
+    setNewProdTitle("");
+    setNewProdPrice("");
+    setNewProdDesc("");
+    setNewProdImage("");
+  };
+
+  // ----------------------------------------------------
+  // AI CUSTOMER SUPPORT ASSISTANT (RucorAZ AI)
+  // ----------------------------------------------------
+  const handleSendAiMessage = async (textToSend) => {
+    const userMsg = textToSend || aiInputText;
+    if (!userMsg.trim()) return;
+
+    const newMsgs = [...aiMessages, { sender: "user", text: userMsg, time: "İndi" }];
+    setAiMessages(newMsgs);
+    setAiInputText("");
+    setAiLoading(true);
+
+    setTimeout(() => {
+      chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+
+    const normalized = userMsg.toLowerCase();
+
+    // Fast intelligent heuristic support engine in Azerbaijani and Turkish
+    setTimeout(() => {
+      let reply = "";
+      if (lang === 'az') {
+        if (normalized.includes("balans") || normalized.includes("artır") || normalized.includes("kart") || normalized.includes("leobank")) {
+          reply = `Balansınızı artırmaq çox asandır! 💳\n1. "Balans artır" səhifəsinə keçin.\n2. Rəsmi LeoBank kartımıza (${leobankConfig.cardNumber} - ${leobankConfig.cardHolder}) istədiyiniz məbləği göndərin.\n3. Köçürmə qəbzini seçin və məbləği qeyd edib göndərin.\nAdmin yoxlamasından sonra vəsait dərhal cüzdanınıza əlavə olunacaq!`;
+        } else if (normalized.includes("pubg") || normalized.includes("uc") || normalized.includes("kod") || normalized.includes("brawl")) {
+          reply = `Bütün oyun kodları və PUBG Mobile UC sifarişləri avtomatik çatdırılır! Səbətə atıb balansınızla təsdiqlədikdən dərhal sonra unikal aktivasiya açarınız "Sifarişlərim" bölməsində açılır. ⚡`;
+        } else if (normalized.includes("sifariş") || normalized.includes("harada") || normalized.includes("çatdırılma")) {
+          reply = `Bütün tamamlanmış sifarişlərinizə yuxarıdakı "Sifarişlərim" bölməsindən baxa və rəqəmsal aktivasiya pinlərini dərhal kopyalaya bilərsiniz.`;
+        } else if (normalized.includes("endirim") || normalized.includes("qiymət")) {
+          reply = `RucordAZ-da hazırda PUBG Mobile 660 UC cəmi 16.90 AZN, Spotify Premium 3 aylıq 12.50 AZN, ChatGPT Plus isə 32.00 AZN xüsusi endirimlə təqdim olunur!`;
+        } else {
+          reply = `RucordAZ 7/24 Dəstək Xidməti olaraq hər zaman yanınızdayıq. LeoBank ilə komissiyasız balans artıra, PUBG Mobile UC və Premium abunəlikləri anında əldə edə bilərsiniz. Başqa bir sualınız varmı?`;
+        }
+      } else {
+        if (normalized.includes("bakiye") || normalized.includes("yükle") || normalized.includes("kart") || normalized.includes("leobank")) {
+          reply = `Bakiyenizi yüklemek çok kolay! 💳\n1. "Bakiye Yükle" sekmesine gidin.\n2. Resmi LeoBank kartımıza (${leobankConfig.cardNumber} - ${leobankConfig.cardHolder}) tutarı transfer edin.\n3. Dekont görselini yükleyin ve tutarı girin.\nYönetici kontrolünden hemen sonra bakiyeniz tanımlanacaktır.`;
+        } else if (normalized.includes("pubg") || normalized.includes("uc") || normalized.includes("kod")) {
+          reply = `PUBG Mobile UC ve tüm dijital ürünlerimiz cüzdan bakiyenizle satın aldığınız anda "Siparişlerim" sayfasında PIN kodu olarak anında teslim edilir! ⚡`;
+        } else {
+          reply = `RucordAZ AI asistanı olarak 7/24 hizmetinizdeyiz. Dijital oyun ürünleri, cüzdan işlemleri ve sipariş takibi hakkında dilediğinizi sorabilirsiniz.`;
+        }
+      }
+
+      setAiMessages(prev => [...prev, { sender: "bot", text: reply, time: "İndi" }]);
+      setAiLoading(false);
+
+      setTimeout(() => {
+        chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }, 500);
+  };
+
+  // Filter Products
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => {
+      const matchCat = selectedCategory === "all" || p.categoryId === selectedCategory;
+      const titleMatches = p.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const descMatches = (p.descAz + p.descTr).toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCat && (titleMatches || descMatches);
+    }).sort((a, b) => {
+      const priceA = a.discountPrice || a.price;
+      const priceB = b.discountPrice || b.price;
+      if (sortBy === 'low') return priceA - priceB;
+      if (sortBy === 'high') return priceB - priceA;
+      if (sortBy === 'newest') return b.id.localeCompare(a.id);
+      return (b.salesCount || 0) - (a.salesCount || 0);
+    });
+  }, [products, selectedCategory, searchQuery, sortBy]);
+
+  return (
+    <div className="min-h-screen bg-[#09090c] text-[#fafafa] font-sans antialiased selection:bg-rose-600 selection:text-white flex flex-col justify-between">
+      
+      {/* ========================================================
+          NOTIFICATION TOAST
+         ======================================================== */}
+      {toastMessage && (
+        <div className="fixed top-20 right-4 z-[9999] max-w-sm animate-bounce">
+          <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-2xl border backdrop-blur-xl ${
+            toastMessage.type === 'error'
+              ? 'bg-rose-950/90 text-rose-200 border-rose-700/60'
+              : toastMessage.type === 'info'
+              ? 'bg-zinc-900/90 text-zinc-200 border-zinc-700/60'
+              : 'bg-emerald-950/90 text-emerald-200 border-emerald-700/60'
+          }`}>
+            {toastMessage.type === 'error' ? <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" /> : <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
+            <span className="text-xs sm:text-sm font-semibold">{toastMessage.msg}</span>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          HEADER & NAVIGATION BAR
+         ======================================================== */}
+      <header className="sticky top-0 z-50 bg-[#0a0a0d]/95 backdrop-blur-xl border-b border-zinc-850/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+          
+          {/* Logo with Stylized RucordAZ Shield */}
+          <div 
+            onClick={() => { setActiveTab('home'); setSelectedCategory('all'); }}
+            className="flex items-center gap-3 cursor-pointer group select-none shrink-0"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 via-red-600 to-rose-500 flex items-center justify-center shadow-lg shadow-rose-600/30 group-hover:scale-105 transition-all">
+              <span className="text-xl font-black tracking-tighter text-white">R</span>
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-2xl font-black tracking-tight text-white group-hover:text-rose-500 transition-colors">
+                  Rucord<span className="text-rose-500">AZ</span>
+                </span>
+                <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  OFFICIAL
+                </span>
+              </div>
+              <p className="text-[10px] text-zinc-400 -mt-1 hidden sm:block tracking-wide">
+                Digital Products & Gaming
+              </p>
+            </div>
+          </div>
+
+          {/* Search Bar (Desktop) */}
+          <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t.product.searchPlaceholder}
+              className="w-full bg-zinc-900/90 text-sm pl-10 pr-4 py-2.5 rounded-xl border border-zinc-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 focus:outline-none transition-all placeholder:text-zinc-500"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Header Action Items */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Wallet Balance Pill */}
+            <div 
+              onClick={() => setActiveTab('deposit')}
+              className="flex items-center gap-2 sm:gap-2.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-zinc-900 to-zinc-900/80 border border-zinc-800 hover:border-rose-500/60 cursor-pointer transition-all shadow-inner group"
+            >
+              <div className="w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                <Wallet className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-[9px] uppercase font-bold text-zinc-400 tracking-wider">
+                  {lang === 'az' ? 'Balans' : 'Bakiye'}
+                </p>
+                <p className="text-xs sm:text-sm font-extrabold text-white">
+                  {currentUser.walletBalance.toFixed(2)} <span className="text-rose-500 text-[10px] sm:text-xs">AZN</span>
+                </p>
+              </div>
+              <Plus className="w-3.5 h-3.5 text-zinc-500 group-hover:text-rose-400 transition-colors ml-0.5" />
+            </div>
+
+            {/* Language Switcher */}
+            <div className="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800 text-xs font-bold">
+              <button
+                onClick={() => handleLanguageChange('az')}
+                className={`px-2.5 py-1 rounded-lg transition-all ${lang === 'az' ? 'bg-rose-600 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
+              >
+                AZ
+              </button>
+              <button
+                onClick={() => handleLanguageChange('tr')}
+                className={`px-2.5 py-1 rounded-lg transition-all ${lang === 'tr' ? 'bg-rose-600 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
+              >
+                TR
+              </button>
+            </div>
+
+            {/* Notification Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => setShowNotifDropdown(!showNotifDropdown)}
+                className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 hover:text-white hover:border-zinc-700 relative transition-all"
+              >
+                <Bell className="w-4 h-4" />
+                {notifications.some(n => !n.read) && (
+                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#0a0a0d]"></span>
+                )}
+              </button>
+
+              {showNotifDropdown && (
+                <div className="absolute right-0 mt-3 w-80 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl p-4 z-50">
+                  <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+                    <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-rose-500" /> {t.settings.notifications}
+                    </h4>
+                    <button 
+                      onClick={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
+                      className="text-[11px] text-zinc-400 hover:text-rose-400 font-medium"
+                    >
+                      {lang === 'az' ? 'Hamısını oxu' : 'Tümünü oku'}
+                    </button>
+                  </div>
+                  <div className="mt-2 max-h-64 overflow-y-auto space-y-2">
+                    {notifications.length === 0 ? (
+                      <p className="text-xs text-zinc-500 text-center py-4">Bildiriş yoxdur</p>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} className={`p-2.5 rounded-xl border text-xs transition-all ${n.read ? 'bg-zinc-900/40 border-zinc-800 text-zinc-400' : 'bg-rose-950/20 border-rose-900/40 text-zinc-200'}`}>
+                          <div className="flex items-center justify-between font-bold text-white mb-1">
+                            <span>{n.title}</span>
+                            <span className="text-[10px] text-zinc-500">{n.time}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed">{n.message}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Cart Button */}
+            <button
+              onClick={() => setActiveTab('cart')}
+              className={`relative px-3 sm:px-3.5 py-2 rounded-xl flex items-center gap-2 font-bold text-xs border transition-all ${
+                cart.length > 0 
+                  ? 'bg-rose-600 text-white border-rose-500 shadow-lg shadow-rose-600/30' 
+                  : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:text-white'
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span className="hidden sm:inline">{t.nav.cart}</span>
+              {cart.length > 0 && (
+                <span className="bg-white text-rose-600 px-1.5 py-0.2 rounded-full text-[10px] font-black">
+                  {cart.reduce((a, b) => a + b.quantity, 0)}
+                </span>
+              )}
+            </button>
+
+            {/* Quick Admin Switcher Button */}
+            <button
+              onClick={() => {
+                if (currentUser.role === 'admin') {
+                  setActiveTab('admin');
+                } else {
+                  showToast("Admin icazəsi lazımdır. Tənzimləmələrdən rolu dəyişə bilərsiniz.", "info");
+                  setActiveTab('settings');
+                }
+              }}
+              title="Admin Panel"
+              className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
+                activeTab === 'admin' 
+                  ? 'bg-rose-600 border-rose-500 text-white shadow-lg shadow-rose-600/20' 
+                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+            </button>
+
+            {/* Mobile Hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop Secondary Sub-navigation */}
+        <div className="hidden md:block bg-[#0e0e12] border-t border-zinc-850/60 px-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between h-12">
+            <nav className="flex items-center space-x-1">
+              {[
+                { id: 'home', label: t.nav.home },
+                { id: 'shop', label: t.nav.shop },
+                { id: 'deposit', label: t.nav.deposit, badge: "LeoBank" },
+                { id: 'orders', label: t.nav.orders },
+                { id: 'favorites', label: t.nav.favorites, count: favorites.length },
+                { id: 'settings', label: t.nav.settings }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700'
+                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                  }`}
+                >
+                  {tab.label}
+                  {tab.badge && (
+                    <span className="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-bold border border-rose-500/30">
+                      {tab.badge}
+                    </span>
+                  )}
+                  {tab.count !== undefined && tab.count > 0 && (
+                    <span className="text-[10px] bg-zinc-800 text-zinc-400 px-1.5 rounded-full font-bold">
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3 text-xs text-zinc-400">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                {lang === 'az' ? 'Anında Çatdırılma Aktivdir' : 'Anında Teslimat Aktif'}
+              </span>
+              <span className="text-zinc-700">|</span>
+              <span className="text-zinc-300 font-semibold">
+                {currentUser.name}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-zinc-950 border-b border-zinc-800 px-4 py-4 space-y-2">
+            <div className="mb-3 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t.product.searchPlaceholder}
+                className="w-full bg-zinc-900 text-sm pl-9 pr-4 py-2 rounded-xl border border-zinc-800 focus:outline-none"
+              />
+            </div>
+            {[
+              { id: 'home', label: t.nav.home },
+              { id: 'shop', label: t.nav.shop },
+              { id: 'deposit', label: t.nav.deposit },
+              { id: 'orders', label: t.nav.orders },
+              { id: 'favorites', label: t.nav.favorites },
+              { id: 'cart', label: `${t.nav.cart} (${cart.length})` },
+              { id: 'admin', label: t.nav.admin },
+              { id: 'settings', label: t.nav.settings }
+            ].map(item => (
+              <button
+                key={item.id}
+                onClick={() => { setActiveTab(item.id); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  activeTab === item.id ? 'bg-rose-600 text-white' : 'text-zinc-300 hover:bg-zinc-900'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </header>
+
+      {/* ========================================================
+          MAIN BODY ROUTER
+         ======================================================== */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        {/* ----------------------------------------------------
+            TAB 1: HOME & HERO
+           ---------------------------------------------------- */}
+        {activeTab === 'home' && (
+          <div className="space-y-12">
+            {/* Hero Section */}
+            <div className="relative rounded-3xl overflow-hidden border border-zinc-800 bg-gradient-to-br from-zinc-900 via-[#101014] to-black p-6 sm:p-10 lg:p-14 shadow-2xl">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-rose-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+
+              <div className="max-w-3xl space-y-6 relative z-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold tracking-wide">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  {t.hero.badge}
+                </div>
+
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15]">
+                  {t.hero.title}
+                </h1>
+
+                <p className="text-zinc-400 text-sm sm:text-base leading-relaxed max-w-2xl">
+                  {t.hero.subtitle}
+                </p>
+
+                {/* Hero CTAs */}
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <button
+                    onClick={() => { setActiveTab('shop'); setSelectedCategory('all'); }}
+                    className="px-6 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-xl shadow-rose-600/25 flex items-center gap-2 transition-all group"
+                  >
+                    <span>{t.hero.ctaShop}</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab('deposit')}
+                    className="px-6 py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 text-zinc-200 border border-zinc-700 font-bold text-sm flex items-center gap-2 transition-all"
+                  >
+                    <CreditCard className="w-4 h-4 text-rose-500" />
+                    <span>{t.hero.ctaDeposit}</span>
+                  </button>
+                </div>
+
+                {/* Badges Grid */}
+                <div className="pt-6 border-t border-zinc-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="flex items-center gap-2.5 text-xs text-zinc-300">
+                    <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                    <span>{t.hero.feature1}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-xs text-zinc-300">
+                    <Bot className="w-4 h-4 text-rose-500 shrink-0" />
+                    <span>{t.hero.feature2}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-xs text-zinc-300">
+                    <Shield className="w-4 h-4 text-rose-500 shrink-0" />
+                    <span>{t.hero.feature3}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Categories Carousel Bar */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-black text-white flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-rose-500" />
+                  {lang === 'az' ? 'Kateqoriyalar' : 'Kategoriler'}
+                </h3>
+                <button 
+                  onClick={() => { setActiveTab('shop'); setSelectedCategory('all'); }}
+                  className="text-xs text-rose-500 hover:text-rose-400 font-bold"
+                >
+                  {lang === 'az' ? 'Hamısına bax →' : 'Tümünü gör →'}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {categories.map(cat => (
+                  <div
+                    key={cat.id}
+                    onClick={() => { setSelectedCategory(cat.id); setActiveTab('shop'); }}
+                    className="p-3.5 rounded-2xl bg-zinc-900/60 border border-zinc-800 hover:border-rose-500/50 hover:bg-zinc-850 cursor-pointer transition-all flex items-center gap-3 group"
+                  >
+                    <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-rose-600 group-hover:text-white transition-all shrink-0">
+                      <Tag className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold text-zinc-300 group-hover:text-white truncate">
+                      {lang === 'az' ? cat.az : cat.tr}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Popular & Featured Products Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-black text-white flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-rose-500" />
+                    {lang === 'az' ? 'Seçilmiş və Endirimli Məhsullar' : 'Öne Çıkan ve İndirimli Ürünler'}
+                  </h3>
+                  <p className="text-xs text-zinc-400">
+                    {lang === 'az' ? 'Ən çox sifariş verilən rəqəmsal oyun və abunəlik kodları' : 'En popüler oyun ve dijital kodlar'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {products.slice(0, 8).map(prod => (
+                  <ProductCard
+                    key={prod.id}
+                    product={prod}
+                    t={t}
+                    lang={lang}
+                    isFavorite={favorites.includes(prod.id)}
+                    onToggleFav={toggleFavorite}
+                    onAddToCart={addToCart}
+                    onOpenDetails={(p) => setSelectedProductDetails(p)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* LeoBank Direct Banner */}
+            <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-rose-950/40 via-zinc-900 to-zinc-950 border border-rose-900/40 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl">
+              <div className="space-y-2">
+                <span className="text-xs font-black text-rose-500 uppercase tracking-widest">
+                  LeoBank Manual Transfer
+                </span>
+                <h4 className="text-xl sm:text-2xl font-black text-white">
+                  {lang === 'az' ? '0% Komissiya ilə Balansını Artır' : '%0 Komisyon ile Bakiyeni Yükle'}
+                </h4>
+                <p className="text-xs text-zinc-400 max-w-lg">
+                  {lang === 'az'
+                    ? 'LeoBank kartımıza birbaşa vəsait köçürüb qəbz yükləyərək balansınızı dərhal artırın. Qalıq cəmi bir neçə dəqiqə ərzində hesabınıza yatırılır.'
+                    : 'LeoBank hesabımıza havale yapıp dekont yükleyerek bakiye kazanabilirsiniz.'}
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveTab('deposit')}
+                className="px-6 py-3 rounded-xl bg-white text-zinc-950 font-black text-xs hover:bg-zinc-200 transition-all shrink-0 flex items-center gap-2"
+              >
+                <CreditCard className="w-4 h-4 text-rose-600" />
+                <span>{t.nav.deposit}</span>
+              </button>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="rounded-3xl bg-zinc-900/50 border border-zinc-800 p-6 sm:p-8 space-y-6">
+              <h3 className="text-lg font-black text-white flex items-center gap-2">
+                <HelpCircle className="w-5 h-5 text-rose-500" />
+                {lang === 'az' ? 'Tez-tez Verilən Suallar (FAQ)' : 'Sıkça Sorulan Sorular'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-850 space-y-1.5">
+                  <h5 className="font-bold text-white">PUBG UC və oyun kodları nə vaxt çatdırılır?</h5>
+                  <p className="text-zinc-400 leading-relaxed">
+                    Sifariş balansınızla təsdiqlənən kimi sistem tərəfindən dərhal 'Sifarişlərim' səhifənizdə aktiv kod kimi generasiya olunur.
+                  </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-855 space-y-1.5">
+                  <h5 className="font-bold text-white">LeoBank ilə balans necə artırılır?</h5>
+                  <p className="text-zinc-400 leading-relaxed">
+                    'Balans artır' bölməsindəki rəsmi kartımıza köçürmə edib ödəniş qəbzini yükləyirsiniz. Admin təsdiqindən sonra balans hesabınıza köçürülür.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 2: SHOP / CATALOG
+           ---------------------------------------------------- */}
+        {activeTab === 'shop' && (
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+              <div>
+                <h2 className="text-2xl font-black text-white">{t.nav.shop}</h2>
+                <p className="text-xs text-zinc-400">
+                  {filteredProducts.length} {lang === 'az' ? 'məhsul tapıldı' : 'ürün bulundu'}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs">
+                <span className="text-zinc-500 font-bold">{t.product.sortBy}:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-transparent text-white font-bold focus:outline-none cursor-pointer"
+                >
+                  <option value="popular" className="bg-zinc-900">{t.product.sortPopular}</option>
+                  <option value="low" className="bg-zinc-900">{t.product.sortLow}</option>
+                  <option value="high" className="bg-zinc-900">{t.product.sortHigh}</option>
+                  <option value="newest" className="bg-zinc-900">{t.product.sortNewest}</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  selectedCategory === 'all'
+                    ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
+                    : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
+                }`}
+              >
+                {t.categories.all}
+              </button>
+              {categories.map(c => (
+                <button
+                  key={c.id}
+                  onClick={() => setSelectedCategory(c.id)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                    selectedCategory === c.id
+                      ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
+                      : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
+                  }`}
+                >
+                  {lang === 'az' ? c.az : c.tr}
+                </button>
+              ))}
+            </div>
+
+            {/* Grid */}
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-20 bg-zinc-900/30 rounded-3xl border border-zinc-800">
+                <Package className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                <h4 className="text-base font-bold text-white mb-1">
+                  {lang === 'az' ? 'Heç bir məhsul tapılmadı' : 'Ürün bulunamadı'}
+                </h4>
+                <p className="text-xs text-zinc-500 mb-4">
+                  {lang === 'az' ? 'Axtarış sözünü dəyişməyə və ya filterləri sıfırlamağa cəhd edin.' : 'Arama terimini değiştirin.'}
+                </p>
+                <button
+                  onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
+                  className="px-4 py-2 bg-zinc-800 text-xs font-bold rounded-xl text-white hover:bg-zinc-700"
+                >
+                  {lang === 'az' ? 'Filterləri Sıfırla' : 'Filtreleri Sıfırla'}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {filteredProducts.map(prod => (
+                  <ProductCard
+                    key={prod.id}
+                    product={prod}
+                    t={t}
+                    lang={lang}
+                    isFavorite={favorites.includes(prod.id)}
+                    onToggleFav={toggleFavorite}
+                    onAddToCart={addToCart}
+                    onOpenDetails={(p) => setSelectedProductDetails(p)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 3: MANUAL LEOBANK PAYMENT SYSTEM ('Balans artır')
+           ---------------------------------------------------- */}
+        {activeTab === 'deposit' && (
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="text-center space-y-2">
+              <h2 className="text-3xl font-black text-white">{t.deposit.pageTitle}</h2>
+              <p className="text-sm text-zinc-400 max-w-lg mx-auto">
+                {t.deposit.subTitle}
+              </p>
+            </div>
+
+            {/* LeoBank Card */}
+            <div className="relative max-w-md mx-auto rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-zinc-950 via-zinc-900 to-neutral-900 border border-zinc-700/60 shadow-2xl text-white overflow-hidden group">
+              <div className="absolute top-0 right-0 w-44 h-44 bg-rose-600/20 rounded-full blur-2xl pointer-events-none"></div>
+
+              <div className="flex items-center justify-between mb-8 relative z-10">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-rose-600 flex items-center justify-center font-black text-white text-xs">
+                    🦁
+                  </div>
+                  <span className="font-black text-base tracking-wider uppercase">LeoBank</span>
+                </div>
+                <span className="text-xs font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+                  DEBIT
+                </span>
+              </div>
+
+              {/* Card Number display */}
+              <div className="space-y-1 mb-8 relative z-10">
+                <span className="text-[10px] text-zinc-400 uppercase font-mono tracking-widest">KART NÖMRƏSİ</span>
+                <div className="flex items-center justify-between bg-zinc-900/90 px-3.5 py-2.5 rounded-xl border border-zinc-800">
+                  <span className="text-lg sm:text-xl font-mono font-bold tracking-widest text-zinc-100">
+                    {leobankConfig.cardNumber}
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(leobankConfig.cardNumber.replace(/\s+/g, ''));
+                      showToast(t.deposit.copied, "success");
+                    }}
+                    className="p-1.5 rounded-lg bg-zinc-800 hover:bg-rose-600 text-zinc-300 hover:text-white transition-all ml-2"
+                    title={t.deposit.copyCard}
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Cardholder details */}
+              <div className="flex items-center justify-between text-xs relative z-10">
+                <div>
+                  <span className="text-[9px] text-zinc-500 uppercase tracking-wider block font-bold">{t.deposit.cardHolderLabel}</span>
+                  <span className="font-extrabold tracking-wide text-zinc-200">{leobankConfig.cardHolder}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[9px] text-zinc-500 uppercase tracking-wider block font-bold">STATUS</span>
+                  <span className="text-emerald-400 font-bold flex items-center gap-1 justify-end">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> AKTİV
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Mandatory Exact Instructions in Azerbaijani */}
+            <div className="rounded-2xl bg-zinc-900/80 border border-rose-900/30 p-5 sm:p-6 space-y-3">
+              <h4 className="text-sm font-black text-rose-500 flex items-center gap-2">
+                <Info className="w-4 h-4" />
+                {t.deposit.instructionTitle}
+              </h4>
+              <ul className="text-xs sm:text-sm text-zinc-300 space-y-2 list-none">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">1.</span>
+                  <span>{t.deposit.step1}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">2.</span>
+                  <span>{t.deposit.step2}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">3.</span>
+                  <span>{t.deposit.step3}</span>
+                </li>
+              </ul>
+              <p className="text-xs text-zinc-400 pt-2 border-t border-zinc-800 leading-relaxed italic">
+                "{t.deposit.approvalNotice}"
+              </p>
+            </div>
+
+            {/* Payment Request Submission Form */}
+            <form onSubmit={handleDepositSubmit} className="rounded-3xl bg-zinc-900/40 border border-zinc-800 p-6 sm:p-8 space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                    {t.deposit.amountLabel} *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="1"
+                      value={depositAmount}
+                      onChange={(e) => setDepositAmount(e.target.value)}
+                      placeholder="Məs: 20"
+                      className="w-full bg-zinc-900 text-white font-bold text-base px-4 py-3 rounded-xl border border-zinc-800 focus:border-rose-500 focus:outline-none"
+                      required
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-extrabold text-rose-500">
+                      AZN
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                    {t.deposit.noteLabel}
+                  </label>
+                  <input
+                    type="text"
+                    value={depositNote}
+                    onChange={(e) => setDepositNote(e.target.value)}
+                    placeholder={t.deposit.notePlaceholder}
+                    className="w-full bg-zinc-900 text-sm px-4 py-3 rounded-xl border border-zinc-800 focus:border-rose-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Receipt File Upload */}
+              <div>
+                <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                  {t.deposit.receiptLabel} *
+                </label>
+                <div className="relative border-2 border-dashed border-zinc-700 hover:border-rose-500 rounded-2xl p-6 text-center cursor-pointer transition-all bg-zinc-900/30">
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg, image/webp"
+                    onChange={handleReceiptUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  {receiptPreview ? (
+                    <div className="space-y-2">
+                      <img src={receiptPreview} alt="Qəbz" className="max-h-48 mx-auto rounded-xl object-contain border border-zinc-700 shadow-md" />
+                      <p className="text-xs text-emerald-400 font-bold">✓ Şəkil seçildi. Dəyişmək üçün yenidən klikləyin.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 pointer-events-none">
+                      <ArrowUpRight className="w-8 h-8 text-zinc-500 mx-auto" />
+                      <p className="text-xs text-zinc-400 font-medium">
+                        {t.deposit.dropOrClick}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={depositSubmitting}
+                className="w-full py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-black text-sm shadow-xl shadow-rose-600/30 transition-all flex items-center justify-center gap-2"
+              >
+                {depositSubmitting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>{t.deposit.submitting}</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    <span>{t.deposit.submit}</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Previous Deposit Requests */}
+            <div className="space-y-3 pt-4">
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Clock className="w-4 h-4 text-zinc-400" />
+                {lang === 'az' ? 'Son Yükləmə Sorğularınız' : 'Son Bakiye Talepleriniz'}
+              </h4>
+
+              <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 overflow-hidden">
+                {paymentRequests.filter(r => r.userId === currentUser.id).length === 0 ? (
+                  <p className="text-xs text-zinc-500 text-center py-6">Hələ ki, ödəniş sorğunuz yoxdur.</p>
+                ) : (
+                  <div className="divide-y divide-zinc-800 text-xs">
+                    {paymentRequests.filter(r => r.userId === currentUser.id).map(r => (
+                      <div key={r.id} className="p-3.5 sm:px-5 flex items-center justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-mono font-bold text-white">{r.id}</span>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                              r.status === 'Approved' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
+                              r.status === 'Rejected' ? 'bg-rose-950 text-rose-400 border border-rose-800' :
+                              'bg-amber-950 text-amber-400 border border-amber-800 animate-pulse'
+                            }`}>
+                              {r.status === 'Pending' ? t.deposit.pendingStatus :
+                               r.status === 'Approved' ? t.deposit.approvedStatus :
+                               t.deposit.rejectedStatus}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400">{r.createdAt} • {r.note}</p>
+                          {r.rejectionReason && (
+                            <p className="text-[11px] text-rose-400 mt-0.5">Səbəb: {r.rejectionReason}</p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <span className="text-sm font-black text-white">{r.amount.toFixed(2)} AZN</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 4: SHOPPING CART & CHECKOUT
+           ---------------------------------------------------- */}
+        {activeTab === 'cart' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+              <ShoppingBag className="w-6 h-6 text-rose-500" />
+              {t.cart.title}
+            </h2>
+
+            {cart.length === 0 ? (
+              <div className="text-center py-20 bg-zinc-900/40 rounded-3xl border border-zinc-800">
+                <ShoppingBag className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                <h4 className="text-base font-bold text-white mb-1">{t.cart.empty}</h4>
+                <p className="text-xs text-zinc-500 mb-6">
+                  {lang === 'az' ? 'Bəyəndiyiniz rəqəmsal məhsulu səbətə əlavə edin.' : 'Beğendiğiniz ürünleri sepete ekleyin.'}
+                </p>
+                <button
+                  onClick={() => setActiveTab('shop')}
+                  className="px-6 py-2.5 bg-rose-600 text-white text-xs font-bold rounded-xl hover:bg-rose-700 transition-all"
+                >
+                  {t.hero.ctaShop}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-3">
+                  {cart.map(item => {
+                    const unitPrice = item.discountPrice || item.price;
+                    return (
+                      <div key={item.id} className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800 flex items-center justify-between gap-4">
+                        <img src={item.image} alt={item.title} className="w-16 h-16 rounded-xl object-cover border border-zinc-850 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-white truncate">{item.title}</h4>
+                          <p className="text-xs text-rose-500 font-extrabold mt-0.5">
+                            {unitPrice.toFixed(2)} AZN
+                          </p>
+                          <span className="text-[10px] text-zinc-400 flex items-center gap-1 mt-1">
+                            <Zap className="w-3 h-3 text-emerald-400" /> {t.product.fastDelivery}
+                          </span>
+                        </div>
+
+                        {/* Quantity Counter */}
+                        <div className="flex items-center gap-2 bg-zinc-950 px-2.5 py-1 rounded-xl border border-zinc-800">
+                          <button
+                            onClick={() => updateCartQuantity(item.id, -1)}
+                            className="text-zinc-400 hover:text-white font-bold px-1"
+                          >
+                            -
+                          </button>
+                          <span className="text-xs font-bold text-white px-1.5">{item.quantity}</span>
+                          <button
+                            onClick={() => updateCartQuantity(item.id, 1)}
+                            className="text-zinc-400 hover:text-white font-bold px-1"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-zinc-500 hover:text-rose-500 p-1.5 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                  <button
+                    onClick={() => setCart([])}
+                    className="text-xs text-zinc-500 hover:text-rose-400 font-medium flex items-center gap-1 pt-2"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> {t.cart.clear}
+                  </button>
+                </div>
+
+                {/* Summary Card */}
+                <div className="rounded-3xl bg-zinc-900 border border-zinc-800 p-6 space-y-6 h-fit">
+                  <h4 className="text-sm font-black text-white uppercase tracking-wider">
+                    {lang === 'az' ? 'Sifariş Xülasəsi' : 'Sipariş Özeti'}
+                  </h4>
+
+                  <div className="space-y-3 text-xs border-b border-zinc-800 pb-4">
+                    <div className="flex items-center justify-between text-zinc-400">
+                      <span>{t.cart.itemCount}:</span>
+                      <span className="text-white font-bold">{cart.reduce((a, b) => a + b.quantity, 0)}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-zinc-400">
+                      <span>{t.cart.yourBalance}:</span>
+                      <span className="text-white font-bold">
+                        {currentUser.walletBalance.toFixed(2)} AZN
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-zinc-300">{t.cart.total}:</span>
+                    <span className="text-2xl font-black text-rose-500">{cartTotal.toFixed(2)} AZN</span>
+                  </div>
+
+                  {currentUser.walletBalance < cartTotal ? (
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-900/50 text-[11px] text-rose-300 flex items-start gap-2">
+                        <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                        <span>
+                          {t.cart.insufficientFunds} Çatışmayan məbləğ:{" "}
+                          <strong>{(cartTotal - currentUser.walletBalance).toFixed(2)} AZN</strong>
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab('deposit')}
+                        className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2"
+                      >
+                        <CreditCard className="w-4 h-4 text-rose-500" />
+                        <span>{t.wallet.depositBtn}</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleCheckout}
+                      className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow-xl shadow-rose-600/30 transition-all flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      <span>{t.cart.checkout}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 5: ORDERS & DELIVERED DIGITAL LICENSES
+           ---------------------------------------------------- */}
+        {activeTab === 'orders' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+              <Package className="w-6 h-6 text-rose-500" />
+              {t.orders.title}
+            </h2>
+
+            {orders.length === 0 ? (
+              <div className="text-center py-20 bg-zinc-900/40 rounded-3xl border border-zinc-800">
+                <Clock className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                <h4 className="text-base font-bold text-white mb-1">{t.orders.noOrders}</h4>
+                <p className="text-xs text-zinc-500 mb-6">
+                  {lang === 'az' ? 'Məhsul alışı etdikdən sonra açarlarınız burada görünəcək.' : 'Satın alma yaptıktan sonra kodlarınız burada listelenir.'}
+                </p>
+                <button
+                  onClick={() => setActiveTab('shop')}
+                  className="px-6 py-2.5 bg-rose-600 text-white text-xs font-bold rounded-xl hover:bg-rose-700"
+                >
+                  {t.hero.ctaShop}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map(ord => (
+                  <div key={ord.id} className="rounded-2xl bg-zinc-900/60 border border-zinc-800 p-5 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-black text-white text-sm">{ord.id}</span>
+                        <span className="text-xs text-zinc-500">• {ord.date}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-950 text-emerald-400 border border-emerald-800">
+                          {ord.status}
+                        </span>
+                        <span className="text-sm font-extrabold text-rose-500">{ord.totalAmount.toFixed(2)} AZN</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {ord.items.map((item, idx) => (
+                        <div key={idx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-850 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-bold text-white">{item.title} (x{item.quantity})</p>
+                            <p className="text-[11px] text-zinc-400">Qiymət: {item.price.toFixed(2)} AZN</p>
+                          </div>
+
+                          <div className="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800">
+                            <span className="text-[10px] uppercase font-bold text-zinc-500">{t.orders.keyInfo}:</span>
+                            <span className="text-xs font-mono font-bold text-emerald-400">{item.key}</span>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(item.key);
+                                showToast(t.deposit.copied, "success");
+                              }}
+                              className="text-zinc-400 hover:text-white p-1"
+                              title={t.orders.copyKey}
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 6: FAVORITES
+           ---------------------------------------------------- */}
+        {activeTab === 'favorites' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+              <Heart className="w-6 h-6 text-rose-500" />
+              {t.nav.favorites}
+            </h2>
+
+            {favorites.length === 0 ? (
+              <div className="text-center py-20 bg-zinc-900/40 rounded-3xl border border-zinc-800">
+                <Heart className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                <h4 className="text-base font-bold text-white mb-1">
+                  {lang === 'az' ? 'Bəyənilən məhsul yoxdur' : 'Favori ürün yok'}
+                </h4>
+                <p className="text-xs text-zinc-500 mb-6">
+                  {lang === 'az' ? 'Məhsulların üzərindəki ürək simvoluna klikləyərək bura əlavə edə bilərsiniz.' : 'Ürünleri favorilere ekleyin.'}
+                </p>
+                <button
+                  onClick={() => setActiveTab('shop')}
+                  className="px-6 py-2.5 bg-rose-600 text-white text-xs font-bold rounded-xl hover:bg-rose-700"
+                >
+                  {t.hero.ctaShop}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {products.filter(p => favorites.includes(p.id)).map(prod => (
+                  <ProductCard
+                    key={prod.id}
+                    product={prod}
+                    t={t}
+                    lang={lang}
+                    isFavorite={true}
+                    onToggleFav={toggleFavorite}
+                    onAddToCart={addToCart}
+                    onOpenDetails={(p) => setSelectedProductDetails(p)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 7: SECURE ADMINISTRATOR CONTROL DASHBOARD
+           ---------------------------------------------------- */}
+        {activeTab === 'admin' && (
+          <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold mb-1">
+                  <Shield className="w-3.5 h-3.5" /> Admin Control Center
+                </div>
+                <h2 className="text-2xl font-black text-white">{t.admin.title}</h2>
+                <p className="text-xs text-zinc-400">{t.admin.sub}</p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowAddProductModal(true)}
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-600/30 transition-all"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>{t.admin.addNewProduct}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+                <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">{t.admin.totalUsers}</span>
+                <span className="text-2xl font-black text-white">1,492</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+                <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">{t.admin.totalProducts}</span>
+                <span className="text-2xl font-black text-white">{products.length}</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+                <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">{t.admin.totalOrders}</span>
+                <span className="text-2xl font-black text-white">{orders.length}</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+                <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">{t.admin.totalRevenue}</span>
+                <span className="text-2xl font-black text-rose-500">
+                  {orders.reduce((a, b) => a + b.totalAmount, 0).toFixed(2)} AZN
+                </span>
+              </div>
+              <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+                <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">{t.admin.pendingDeposits}</span>
+                <span className="text-2xl font-black text-amber-400">
+                  {paymentRequests.filter(r => r.status === 'Pending').length}
+                </span>
+              </div>
+            </div>
+
+            {/* Balans Yükləmə Sorğuları (Payment Requests) */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-black text-white flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-rose-500" />
+                  {t.admin.tabRequests}
+                </h3>
+                <span className="text-xs bg-zinc-800 px-2.5 py-1 rounded-lg text-zinc-300 font-bold">
+                  {paymentRequests.filter(r => r.status === 'Pending').length} {lang === 'az' ? 'gözləyən' : 'bekleyen'}
+                </span>
+              </div>
+
+              <div className="bg-zinc-900/60 rounded-2xl border border-zinc-800 overflow-hidden">
+                {paymentRequests.length === 0 ? (
+                  <p className="text-xs text-zinc-500 text-center py-8">Yükləmə sorğusu yoxdur.</p>
+                ) : (
+                  <div className="divide-y divide-zinc-800 text-xs">
+                    {paymentRequests.map(req => (
+                      <div key={req.id} className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-bold text-white text-sm">{req.id}</span>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                              req.status === 'Approved' ? 'bg-emerald-950 text-emerald-400' :
+                              req.status === 'Rejected' ? 'bg-rose-950 text-rose-400' :
+                              'bg-amber-950 text-amber-400'
+                            }`}>
+                              {req.status}
+                            </span>
+                          </div>
+                          <p className="text-zinc-300 font-medium">{req.userName} ({req.userEmail})</p>
+                          <p className="text-zinc-500 text-[11px]">{req.createdAt} • Qeyd: {req.note}</p>
+                          {req.rejectionReason && (
+                            <p className="text-rose-400 text-[11px]">Səbəb: {req.rejectionReason}</p>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <a
+                            href={req.receiptUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Qəbzə Bax</span>
+                          </a>
+
+                          <span className="text-lg font-black text-white">{req.amount.toFixed(2)} AZN</span>
+
+                          {req.status === 'Pending' && (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleAdminApproveDeposit(req.id)}
+                                className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all"
+                              >
+                                {t.admin.approve}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const reason = prompt("İmtina səbəbini yazın:", "Bank çıxarışı təsdiqlənmədi");
+                                  if (reason !== null) handleAdminRejectDeposit(req.id, reason);
+                                }}
+                                className="px-3 py-1.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-300 font-bold border border-rose-800 transition-all"
+                              >
+                                {t.admin.reject}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Manual Wallet Management */}
+            <div className="p-6 rounded-3xl bg-zinc-900/70 border border-zinc-800 space-y-4">
+              <h3 className="text-lg font-black text-white flex items-center gap-2">
+                <Wallet className="w-5 h-5 text-rose-500" />
+                {t.admin.tabManual}
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Müştərinin balansına birbaşa vəsait əlavə edin və ya çıxarın. Bütün düzəlişlər qeydə alınır.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-zinc-500 block mb-1">İstifadəçi</label>
+                  <div className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-bold text-white">
+                    {currentUser.name} (Balans: {currentUser.walletBalance.toFixed(2)} AZN)
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Məbləğ (AZN)</label>
+                  <input
+                    type="number"
+                    value={manualAmount}
+                    onChange={(e) => setManualAmount(e.target.value)}
+                    placeholder="Məs: 25.00"
+                    className="w-full bg-zinc-950 text-xs font-bold px-3 py-2.5 rounded-xl border border-zinc-800 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Audit Səbəbi</label>
+                  <input
+                    type="text"
+                    value={manualReason}
+                    onChange={(e) => setManualReason(e.target.value)}
+                    placeholder={t.admin.reasonPlaceholder}
+                    className="w-full bg-zinc-950 text-xs px-3 py-2.5 rounded-xl border border-zinc-800 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  onClick={() => handleManualWalletAdjust(true)}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{t.admin.addBalance}</span>
+                </button>
+                <button
+                  onClick={() => handleManualWalletAdjust(false)}
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{t.admin.deductBalance}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* LeoBank Card Configuration */}
+            <div className="p-6 rounded-3xl bg-zinc-900/70 border border-zinc-800 space-y-4">
+              <h3 className="text-lg font-black text-white flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-rose-500" />
+                {t.admin.tabSettings}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Kart Nömrəsi</label>
+                  <input
+                    type="text"
+                    value={leobankConfig.cardNumber}
+                    onChange={(e) => setLeobankConfig(prev => ({ ...prev, cardNumber: e.target.value }))}
+                    className="w-full bg-zinc-950 text-xs font-mono font-bold px-3 py-2.5 rounded-xl border border-zinc-800"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Kart Sahibi</label>
+                  <input
+                    type="text"
+                    value={leobankConfig.cardHolder}
+                    onChange={(e) => setLeobankConfig(prev => ({ ...prev, cardHolder: e.target.value }))}
+                    className="w-full bg-zinc-950 text-xs font-bold px-3 py-2.5 rounded-xl border border-zinc-800"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={() => showToast("LeoBank kart parametrləri yeniləndi", "success")}
+                className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs"
+              >
+                {t.admin.saveChanges}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+            TAB 8: USER PROFILE & SETTINGS
+           ---------------------------------------------------- */}
+        {activeTab === 'settings' && (
+          <div className="max-w-3xl mx-auto space-y-6">
+            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+              <Settings className="w-6 h-6 text-rose-500" />
+              {t.settings.title}
+            </h2>
+
+            {/* Profile Info */}
+            <div className="p-6 rounded-3xl bg-zinc-900/60 border border-zinc-800 space-y-4">
+              <h3 className="text-sm font-black text-white uppercase tracking-wider">{t.settings.userProfile}</h3>
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 to-rose-400 flex items-center justify-center text-white text-xl font-black">
+                  {currentUser.name[0]}
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-white">{currentUser.name}</h4>
+                  <p className="text-xs text-zinc-400">{currentUser.email}</p>
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                    ROL: {currentUser.role.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Language Switcher Section */}
+            <div className="p-6 rounded-3xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+              <h3 className="text-sm font-black text-white uppercase tracking-wider">{t.settings.language}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => handleLanguageChange('az')}
+                  className={`p-4 rounded-2xl border text-left font-bold text-xs transition-all ${
+                    lang === 'az' ? 'bg-rose-950/40 border-rose-600 text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  <p className="text-sm font-black mb-1">🇦🇿 Azərbaycan dili</p>
+                  <span className="text-[11px] font-normal text-zinc-400">Əsas sistem dili</span>
+                </button>
+
+                <button
+                  onClick={() => handleLanguageChange('tr')}
+                  className={`p-4 rounded-2xl border text-left font-bold text-xs transition-all ${
+                    lang === 'tr' ? 'bg-rose-950/40 border-rose-600 text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  <p className="text-sm font-black mb-1">🇹🇷 Türkçe</p>
+                  <span className="text-[11px] font-normal text-zinc-400">İkinci sistem dili</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Role Switcher */}
+            <div className="p-6 rounded-3xl bg-zinc-900/60 border border-zinc-800 space-y-4">
+              <h3 className="text-sm font-black text-white uppercase tracking-wider">{t.settings.accountType}</h3>
+              <p className="text-xs text-zinc-400">
+                Admin idarəetmə mərkəzi ilə müştəri interfeysi arasında rolunuzu anında dəyişib platformanı test edə bilərsiniz.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setCurrentUser(prev => ({ ...prev, role: 'customer' }));
+                    showToast("Müştəri rejiminə keçildi", "info");
+                  }}
+                  className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all ${
+                    currentUser.role === 'customer' ? 'bg-rose-600 text-white' : 'bg-zinc-800 text-zinc-300'
+                  }`}
+                >
+                  {t.settings.switchUser}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentUser(prev => ({ ...prev, role: 'admin' }));
+                    showToast("Admin rejiminə keçildi", "success");
+                  }}
+                  className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all ${
+                    currentUser.role === 'admin' ? 'bg-rose-600 text-white' : 'bg-zinc-800 text-zinc-300'
+                  }`}
+                >
+                  {t.settings.switchAdmin}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* ========================================================
+          ADMIN: ADD NEW PRODUCT MODAL
+         ======================================================== */}
+      {showAddProductModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-zinc-950 border border-zinc-800 max-w-md w-full rounded-3xl p-6 shadow-2xl relative">
+            <button
+              onClick={() => setShowAddProductModal(false)}
+              className="absolute top-4 right-4 text-zinc-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-rose-500" />
+              {t.admin.addNewProduct}
+            </h3>
+
+            <form onSubmit={handleAddNewProduct} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block text-zinc-400 font-bold mb-1">Məhsulun Adı</label>
+                <input
+                  type="text"
+                  value={newProdTitle}
+                  onChange={(e) => setNewProdTitle(e.target.value)}
+                  placeholder="Məs: Discord Nitro 1 Aylıq"
+                  required
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-zinc-400 font-bold mb-1">Qiymət (AZN)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={newProdPrice}
+                    onChange={(e) => setNewProdPrice(e.target.value)}
+                    placeholder="12.50"
+                    required
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-zinc-400 font-bold mb-1">Stok Sayı</label>
+                  <input
+                    type="number"
+                    value={newProdStock}
+                    onChange={(e) => setNewProdStock(e.target.value)}
+                    placeholder="50"
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-bold mb-1">Kateqoriya</label>
+                <select
+                  value={newProdCategory}
+                  onChange={(e) => setNewProdCategory(e.target.value)}
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white"
+                >
+                  {categories.map(c => (
+                    <option key={c.id} value={c.id}>{c.az}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-bold mb-1">Şəkil URL</label>
+                <input
+                  type="text"
+                  value={newProdImage}
+                  onChange={(e) => setNewProdImage(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 font-bold mb-1">Təsvir</label>
+                <textarea
+                  value={newProdDesc}
+                  onChange={(e) => setNewProdDesc(e.target.value)}
+                  placeholder="Məhsul haqqında qısa məlumat..."
+                  rows="2"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-lg shadow-rose-600/30"
+              >
+                Məhsulu Əlavə Et
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          PRODUCT DETAILS MODAL
+         ======================================================== */}
+      {selectedProductDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-zinc-950 border border-zinc-800 max-w-lg w-full rounded-3xl overflow-hidden shadow-2xl relative">
+            <button
+              onClick={() => setSelectedProductDetails(null)}
+              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-zinc-900/80 text-zinc-400 hover:text-white flex items-center justify-center"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <img
+              src={selectedProductDetails.image}
+              alt={selectedProductDetails.title}
+              className="w-full h-56 object-cover"
+            />
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase text-rose-500 bg-rose-500/10 px-2.5 py-0.5 rounded border border-rose-500/20">
+                  {lang === 'az' ? 'Rəqəmsal Kod' : 'Dijital Kod'}
+                </span>
+                <span className="text-xs text-zinc-400 font-bold">
+                  {t.product.inStock}: {selectedProductDetails.stock}
+                </span>
+              </div>
+
+              <h3 className="text-xl font-black text-white">{selectedProductDetails.title}</h3>
+              <p className="text-xs text-zinc-300 leading-relaxed">
+                {lang === 'az' ? selectedProductDetails.descAz : selectedProductDetails.descTr}
+              </p>
+
+              <div className="flex items-center justify-between pt-2">
+                <div>
+                  <span className="text-[10px] text-zinc-500 block uppercase font-bold">{t.product.price}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-black text-white">
+                      {(selectedProductDetails.discountPrice || selectedProductDetails.price).toFixed(2)} AZN
+                    </span>
+                    {selectedProductDetails.discountPrice && (
+                      <span className="text-xs text-zinc-500 line-through">
+                        {selectedProductDetails.price.toFixed(2)} AZN
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    addToCart(selectedProductDetails);
+                    setSelectedProductDetails(null);
+                  }}
+                  className="px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-600/30"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>{t.product.addToCart}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          FLOATING AI ASSISTANT ("RucorAZ AI")
+         ======================================================== */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {!aiChatOpen ? (
+          <button
+            onClick={() => setAiChatOpen(true)}
+            className="w-14 h-14 rounded-full bg-gradient-to-tr from-rose-600 to-red-600 hover:scale-110 text-white shadow-2xl shadow-rose-600/50 flex items-center justify-center transition-all relative group"
+            title="RucorAZ AI Canlı Dəstək"
+          >
+            <Bot className="w-7 h-7" />
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-[#09090c] animate-ping"></span>
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-[#09090c]"></span>
+          </button>
+        ) : (
+          <div className="w-[90vw] sm:w-96 h-[500px] rounded-3xl bg-zinc-950 border border-zinc-800 shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
+            {/* Header */}
+            <div className="p-4 bg-gradient-to-r from-zinc-900 to-zinc-950 border-b border-zinc-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-rose-600 flex items-center justify-center text-white">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-white">{t.ai.name}</h4>
+                  <p className="text-[10px] text-emerald-400 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    {t.ai.status}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setAiChatOpen(false)}
+                className="w-7 h-7 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white flex items-center justify-center"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+              {aiMessages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[82%] p-3 rounded-2xl whitespace-pre-wrap leading-relaxed ${
+                    msg.sender === 'user'
+                      ? 'bg-rose-600 text-white rounded-tr-none'
+                      : 'bg-zinc-900 text-zinc-200 border border-zinc-800 rounded-tl-none'
+                  }`}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {aiLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 text-zinc-400 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-bounce"></span>
+                    <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                  </div>
+                </div>
+              )}
+              <div ref={chatBottomRef} />
+            </div>
+
+            {/* Quick Chips */}
+            <div className="px-3 py-1.5 border-t border-zinc-850 flex items-center gap-1.5 overflow-x-auto scrollbar-none text-[10px]">
+              <button
+                onClick={() => handleSendAiMessage(t.ai.q1)}
+                className="px-2 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-850 text-zinc-300 whitespace-nowrap border border-zinc-800"
+              >
+                {t.ai.q1}
+              </button>
+              <button
+                onClick={() => handleSendAiMessage(t.ai.q2)}
+                className="px-2 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-850 text-zinc-300 whitespace-nowrap border border-zinc-800"
+              >
+                {t.ai.q2}
+              </button>
+            </div>
+
+            {/* Input */}
+            <div className="p-3 border-t border-zinc-800 bg-zinc-950 flex items-center gap-2">
+              <input
+                type="text"
+                value={aiInputText}
+                onChange={(e) => setAiInputText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendAiMessage()}
+                placeholder={t.ai.placeholder}
+                className="flex-1 bg-zinc-900 text-xs px-3.5 py-2.5 rounded-xl border border-zinc-800 focus:outline-none focus:border-rose-500 text-white"
+              />
+              <button
+                onClick={() => handleSendAiMessage()}
+                className="w-9 h-9 rounded-xl bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center transition-all"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ========================================================
+          FOOTER
+         ======================================================== */}
+      <footer className="mt-16 bg-[#0a0a0d] border-t border-zinc-800/80 py-12 text-zinc-400 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+          
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-rose-600 flex items-center justify-center text-white font-black text-sm">
+                R
+              </div>
+              <span className="text-lg font-black text-white">Rucord<span className="text-rose-500">AZ</span></span>
+            </div>
+            <p className="text-zinc-500 leading-relaxed text-[11px]">
+              {t.tagline}. PUBG Mobile UC, Brawl Stars, Premium Abunəliklər və Oyun Kodlarının rəsmi etibarlı ünvanı.
+            </p>
+          </div>
+
+          <div>
+            <h5 className="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Kateqoriyalar</h5>
+            <ul className="space-y-1.5 text-zinc-400">
+              <li><button onClick={() => { setActiveTab('shop'); setSelectedCategory('c2'); }} className="hover:text-rose-400">PUBG Mobile UC</button></li>
+              <li><button onClick={() => { setActiveTab('shop'); setSelectedCategory('c1'); }} className="hover:text-rose-400">Premium Abunəliklər</button></li>
+              <li><button onClick={() => { setActiveTab('shop'); setSelectedCategory('c8'); }} className="hover:text-rose-400">Spotify & YouTube</button></li>
+              <li><button onClick={() => { setActiveTab('shop'); setSelectedCategory('c9'); }} className="hover:text-rose-400">Steam & Riot Games</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Müştəri Xidməti</h5>
+            <ul className="space-y-1.5 text-zinc-400">
+              <li><button onClick={() => setActiveTab('deposit')} className="hover:text-rose-400">Balans artırma təlimatı</button></li>
+              <li><button onClick={() => setActiveTab('orders')} className="hover:text-rose-400">Sifarişlərin izlənməsi</button></li>
+              <li><button onClick={() => setAiChatOpen(true)} className="hover:text-rose-400">RucorAZ AI Canlı Dəstək</button></li>
+              <li><span className="text-zinc-500">LeoBank: {leobankConfig.cardNumber}</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Təhlükəsizlik & Valyuta</h5>
+            <p className="text-zinc-500 text-[11px] leading-relaxed mb-3">
+              Bütün ödənişlər LeoBank manual bank transferi və daxili qorunan cüzdan balansı vasitəsilə həyata keçirilir.
+            </p>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold">AZN (₼)</span>
+              <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-emerald-400 font-bold">SSL Secured</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-zinc-850 flex flex-col sm:flex-row items-center justify-between text-zinc-600 text-[11px]">
+          <p>© 2026 RucordAZ. Bütün hüquqlar qorunur.</p>
+          <p className="mt-2 sm:mt-0">Black & Crimson Luxury UI System</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// ==========================================
+// REUSABLE PRODUCT CARD
+// ==========================================
+function ProductCard({ product, t, lang, isFavorite, onToggleFav, onAddToCart, onOpenDetails }) {
+  const finalPrice = product.discountPrice || product.price;
+
+  return (
+    <div className="group rounded-3xl bg-zinc-900/40 border border-zinc-800/80 hover:border-rose-500/50 hover:bg-zinc-900 transition-all duration-300 overflow-hidden flex flex-col justify-between shadow-lg">
+      <div className="relative overflow-hidden aspect-[4/3] bg-zinc-950">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          {product.discountPrice && (
+            <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-md">
+              -{Math.round(((product.price - product.discountPrice) / product.price) * 100)}%
+            </span>
+          )}
+          <span className="bg-zinc-950/80 backdrop-blur-md text-emerald-400 text-[9px] font-extrabold px-2 py-0.5 rounded-md border border-zinc-800">
+            {t.product.fastDelivery}
+          </span>
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFav(product.id);
+          }}
+          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+            isFavorite
+              ? 'bg-rose-600 text-white shadow-lg'
+              : 'bg-zinc-950/70 text-zinc-400 hover:text-white'
+          }`}
+        >
+          <Heart className={`w-4 h-4 ${isFavorite ? 'fill-white' : ''}`} />
+        </button>
+      </div>
+
+      <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+        <div>
+          <h4 
+            onClick={() => onOpenDetails(product)}
+            className="text-sm font-bold text-white hover:text-rose-400 transition-colors line-clamp-1 cursor-pointer"
+          >
+            {product.title}
+          </h4>
+          <p className="text-[11px] text-zinc-400 line-clamp-2 mt-1 leading-relaxed">
+            {lang === 'az' ? product.descAz : product.descTr}
+          </p>
+        </div>
+
+        <div className="pt-2 border-t border-zinc-850 flex items-center justify-between">
+          <div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-black text-white">{finalPrice.toFixed(2)}</span>
+              <span className="text-xs font-bold text-rose-500">AZN</span>
+            </div>
+            {product.discountPrice && (
+              <span className="text-[10px] text-zinc-500 line-through">
+                {product.price.toFixed(2)} AZN
+              </span>
+            )}
+          </div>
+
+          <button
+            onClick={() => onAddToCart(product)}
+            className="p-2.5 rounded-xl bg-zinc-800 hover:bg-rose-600 text-zinc-200 hover:text-white transition-all shadow-md group-hover:bg-rose-600 group-hover:text-white"
+            title={t.product.addToCart}
+          >
+            <ShoppingBag className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
